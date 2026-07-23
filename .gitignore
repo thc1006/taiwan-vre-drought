@@ -1,0 +1,6 @@
+# 抓取的台電資料（可由 fetch.py 重新產生）
+data/
+__pycache__/
+*.py[cod]
+.venv/
+.ipynb_checkpoints/

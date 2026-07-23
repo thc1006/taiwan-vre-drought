@@ -1,0 +1,4 @@
+# 台灣 VRE-drought 分析
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.8
