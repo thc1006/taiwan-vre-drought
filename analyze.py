@@ -1,7 +1,9 @@
 """分析：台灣電網最吃緊的日子，是「再生能源低谷」還是「尖峰需求」？
 
-核心發現（2025–2026）：備轉容量率最低的日子由**再生能源低谷**主導，而非尖峰負載，
-且與夏季用電尖峰**脫鉤**（集中在秋冬）。排除歲修 confound 後結論成立。
+天真的答案看似很強：備轉容量率最低的日子和再生能源低谷相關（r ≈ +0.51），和尖峰負載
+幾乎無關（r ≈ −0.12）。但這個相關大半是會計恆等式：備轉率的定義就是 (供給 − 負載) / 負載，
+而再生能源本來就是供給的組成。扣掉這層之後，結論化約為「備轉率追隨淨負載」，是電網教科書
+常識，不是因果發現。下面的 ⑥ 混淆稽核把這條攤開。
 """
 from __future__ import annotations
 
@@ -84,7 +86,23 @@ def analyze(d: pd.DataFrame, n_tight: int = 15) -> dict:
         "solar": round(float(beta[3]), 2),
     }
 
-    # ⑥ 逐月平均
+    # ⑥ 混淆稽核：這個相關是不是機械／定義性的？
+    implied = (d.supply - d.load) / d.load * 100        # 備轉率的定義式
+    da = d.copy()
+    for c in ["margin", "renew", "load"]:               # 去季節（逐月距平）
+        da[c + "_a"] = da[c] - da.groupby("month")[c].transform("mean")
+    netload = d.load - d.renew
+    out["confound"] = {
+        "margin_is_identity": round(float(d.margin.corr(implied)), 2),
+        "supply_vs_renew": round(float(d.supply.corr(d.renew)), 2),
+        "supply_vs_load": round(float(d.supply.corr(d.load)), 2),
+        "deseason_margin_renew": round(float(da.margin_a.corr(da.renew_a)), 2),
+        "deseason_margin_load": round(float(da.margin_a.corr(da.load_a)), 2),
+        "margin_vs_netload": round(float(d.margin.corr(netload)), 2),
+        "margin_vs_load": round(float(d.margin.corr(d.load)), 2),
+    }
+
+    # ⑦ 逐月平均
     out["monthly"] = d.groupby("month")[["margin", "renew", "load"]].mean().round(1).to_dict("index")
     return out
 
@@ -108,3 +126,11 @@ def print_report(r: dict) -> None:
           f"只低再生 {cm['low_renew_only']}%（n={cm['n_low_renew']}）")
     b = r["regression_std_beta"]
     print(f"\n⑤ 標準化迴歸係數：負載 {b['load']:+.2f}  風力 {b['wind']:+.2f}  太陽能 {b['solar']:+.2f}")
+    c = r["confound"]
+    print("\n⑥ 混淆稽核（這個相關其實大半是會計恆等式）：")
+    print(f"   備轉率 ≡ (供給−負載)/負載：相關 {c['margin_is_identity']:+.2f}（≈1 表示這就是定義本身）")
+    print(f"   corr(供給, 再生) = {c['supply_vs_renew']:+.2f}　再生能源本來就是供給的組成")
+    print(f"   去季節後　margin~再生 {c['deseason_margin_renew']:+.2f}、margin~負載 {c['deseason_margin_load']:+.2f}")
+    print(f"   corr(備轉率, 淨負載 load−renew) = {c['margin_vs_netload']:+.2f}"
+          f"　vs　corr(備轉率, 毛負載) = {c['margin_vs_load']:+.2f}")
+    print("   → 化約為「備轉率追隨淨負載」，是電網常識，不是因果發現。")

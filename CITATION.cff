@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+title: "台灣電網備轉 × 再生能源：一條會計恆等式 · Grid tightness vs VRE: an accounting identity"
+message: "如果這份分析對你有幫助，歡迎依下列方式引用。"
+type: software
+abstract: >-
+  用完全開放的台電資料檢驗「台灣電網最吃緊的日子由再生能源低谷主導」這個說法。
+  相關看似很強（r = +0.51），卻大半是會計恆等式：備轉率的定義就是 (供給 − 負載) / 負載，
+  而再生能源本來就是供給的組成。化約後等於「備轉率追隨淨負載」，是一份誠實的否定。
+authors:
+  - name: "thc1006"
+repository-code: "https://github.com/thc1006/taiwan-vre-drought"
+url: "https://github.com/thc1006/taiwan-vre-drought"
+license: MIT
+date-released: "2026-07-25"
+keywords:
+  - taiwan
+  - power-grid
+  - renewable-energy
+  - confounding
+  - open-data

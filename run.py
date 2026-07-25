@@ -25,10 +25,12 @@ def main() -> int:
 
     # 一句話結論
     print("\n" + "=" * 60)
-    cm = r["conditional_margin"]
-    print("結論：台灣電網最吃緊的日子由『再生能源低谷』主導，非尖峰需求。")
-    print(f"  只高載 {cm['high_load_only']}% vs 只低再生 {cm['low_renew_only']}%"
-          f"（一般日 {cm['all']}%）—— 低再生壓得更低。")
+    c = r["confound"]
+    print("結論（誠實的否定）：備轉率對再生能源的相關看似很強，卻大半是會計恆等式。")
+    print(f"  備轉率 ≡ (供給−負載)/負載 相關 {c['margin_is_identity']:+.2f}；"
+          f"corr(供給, 再生) {c['supply_vs_renew']:+.2f}。")
+    print(f"  去季節後化約為「備轉率追隨淨負載」（相關 {c['margin_vs_netload']:+.2f}），"
+          f"是電網常識，不是因果發現。")
     return 0
 
 
