@@ -82,4 +82,4 @@ python run.py          # 抓資料、分析、混淆稽核、出圖
 - **taiwan-vre-drought**（本專案）— 電網備轉 × 再生能源，死於會計恆等式
 - [taiwan-solar-dimming](https://github.com/thc1006/taiwan-solar-dimming) — 光電 × 氣膠，死於季節同步
 - [taiwan-earthquake-fab](https://github.com/thc1006/taiwan-earthquake-fab) — 地震 × 晶圓廠，死於檢定力
-- [taiwan-riverbed-dust](https://github.com/thc1006/taiwan-riverbed-dust) — 河床揚塵 × PM10，死於順流向空間梯度
+- [taiwan-riverbed-dust](https://github.com/thc1006/taiwan-riverbed-dust) — 河床揚塵 × PM10，死於順風向空間梯度
